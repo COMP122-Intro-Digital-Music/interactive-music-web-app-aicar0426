@@ -16,18 +16,9 @@
 </head>
 
 <body>
-  <button id="part0" class='menu'>COMP122 Player Start</button>
+  <button id="part0" class='menu'>COMP122 Player Tempo & Sync</button>
   <div id="start" class='contents' style="display: block;">
     <div id='metronome'></div>
-    <button id="qrButton" class='menu' style="width: 80%;">View on mobile device</button>
-    <div class='contents' style="display: none; text-align: center;">
-      <div id="QRLink" style="margin: auto; width: 80px;"></div>
-    </div>
-    <button id="aboutButton" class='menu' style="width: 80%;">About this project ...</button>
-    <div id="about" class='contents' style="display: none; text-align: left;">
-      <!-- Edit content in "about.md" -->
-      <zero-md src="about/about.md"></zero-md>
-    </div>
   </div>
 
   <button id="part1" class='menu'>1. Samples</button>
@@ -75,7 +66,19 @@
       <zero-md src="about/part4.md"></zero-md>
     </div>
   </div>
+  <button id="qrButton" class='menu'>View on mobile device</button>
+  <div class='contents' style="display: none; text-align: center;">
+    <div id="QRLink" style="margin: auto; width: 80px;"></div>
+  </div>
 
+  <button id="aboutButton" class='menu'>About this project ...</button>
+  <div id="about" class='contents' style="display: none; text-align: left;">
+    <!-- Edit content in "about.md" -->
+    <zero-md src="about/about.md"></zero-md>
+  </div>
+
+
+  <script src="scripts/metroGUI.js"></script>
   <script src="scripts/pageLayout.js"></script>
   <script src="scripts/keyboard.js"></script>
   <script src="scripts/synths.js"></script>
