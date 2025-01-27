@@ -1,7 +1,13 @@
-document.querySelector('button')?.addEventListener('click', async () => {
-  await Tone.start()
-  console.log('audio is ready')
-})
+//document.querySelector('button')?.addEventListener('click', async () => {
+  // await Tone.start()
+//  console.log('audio is ready')
+// })
+
+let fake = document.getElementById("foo"); // hidden fake out button
+fake.addEventListener('click', (e) =>{
+  // window.alert("foo!");
+
+});
 
 let menus = document.querySelectorAll("button.menu"); // get all the menu buttons
 //attach click eventListeners to each menu button controlling the next 'contents' class div in the document
@@ -10,7 +16,8 @@ menus.forEach((menuButton) => {
   let div = menuButton.nextElementSibling;
   if(div.classList.contains('contents')){
 //      console.log(div);
-    menuButton.addEventListener('click', () => {
+    menuButton.addEventListener('click', (e) => {
+      e.preventDefault();
       if (div.style.display === "none") {
         div.style.display = "block";
       } else {

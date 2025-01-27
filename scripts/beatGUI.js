@@ -10,6 +10,7 @@ const beatPartGUI = p => {
   var margin = 50; // left padding
   var pitch = "C3"; // default pitch
   var div = document.getElementById("beatParts");
+  var sect3 = document.getElementById("part3-contents");
 
   p.setObj = function(_obj) {
   //  console.log("setting object for beat part " + JSON.stringify(_obj));
@@ -73,6 +74,7 @@ const beatPartGUI = p => {
 //      loop.stop();
 //      cellCount = 0; // reset counter
 //    } else {
+console.log("loopStart() in beatPartGUI 76");
       cellCount = 0;
       let t = Tone.Transport.position;
       let times = t.split(':');
@@ -80,7 +82,7 @@ const beatPartGUI = p => {
       times[1] = 0; // set to first beat
       times[0] = Number(times[0]) + 1; // move up to the next measure;
       t = times[0] + ":" + times[1] + ":" + times[2];
-
+      console.log("starting loop");
       loop.start(t); // time in beats or seconds
 //    }
   }
@@ -106,7 +108,8 @@ const beatPartGUI = p => {
   }
 
   p.mousePressed = function() {
-    if (p.mouseY < p.height && p.mouseY > 0 && div.style["display"] == "block") {
+    if (p.mouseY < p.height && p.mouseY > 0 && div.style["display"] == "block" && sect3.style["display"] == "block") {
+      console.log ("beatpart mouse pressed " + div.id);
       if (loop.state == 'started') {
         loop.stop();
         cellCount = 0; // reset counter
@@ -128,21 +131,23 @@ const beatsGUI = p => {
   let menu, plusButton, playButton;
   let objs = [];
   let loops = []; // get loop sketches from each part and add to array
-  var div = document.getElementById("part3-contents");
+  var div = document.getElementById("part3-contents"); // parent
 
   p.setLoops = function(arr){
     loops = arr;
     console.log("loops array for big button: ");
     for(let i = 0; i < loops.length; i++){
       console.log(loops[i]);
-      console.log(loops[i].state);
+      console.log(loops[i].getLoop().state);
+      loops[i].loopStop(); // make sure loops are stopped
     }
   }
   
   p.setup = function() {
     p.createCanvas(350, 60);
     plusButton = new PlusButton(p, p.width * 11 / 12, p.height / 2);
-    playButton = new BeatPlayButton(p, p.width / 2, p.height / 2)
+    playButton = new BeatPlayButton(p, p.width / 2, p.height / 2);
+    console.log("Beat Div: " + div.id + " (display: " + div.style["display"] + ")"); 
   }
 
   p.draw = function() {
@@ -168,6 +173,7 @@ const beatsGUI = p => {
   }
 
   p.mousePressed = function() {
+    // collapse beat parts
     let partsDiv = document.getElementById("beatParts");
     if (plusButton.click(p.mouseX, p.mouseY)) {
       if (partsDiv.style.display === "none") {
@@ -199,7 +205,7 @@ const beatsGUI = p => {
         for(let i = 0; i < loops.length; i++){
           loops[i].loopStart(); // P5 sketch for each loop handles timing and loop start/stop
 //          console.log("starting beat" + i + " at " + t);
-          console.log("loop progress: " + loops[i].progress)
+          // console.log("loop progress: " + loops[i].progress)
         }
       }
     }
@@ -220,6 +226,7 @@ class BeatPlayButton {
   click(_x, _y){
     let d = this.p.dist(this.x, this.y, _x, _y);
     if(d < this.w/2){
+      // console.log("beat button clicked");
       this.playing = !this.playing;
       return true;
     } else {

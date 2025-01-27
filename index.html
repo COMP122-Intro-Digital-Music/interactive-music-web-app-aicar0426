@@ -15,23 +15,33 @@
   <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
 </head>
 
-<body>
-  <button id="part0" class='menu'>COMP122 Player Tempo & Sync</button>
-  <div id="start" class='contents' style="display: block;">
+<body id = "foo">
+  <!-- About -->
+  <button id="aboutButton" class='menu'>Interactive Music App</button>
+  <div id="about" class='contents' style="display: none; text-align: left;">
+    <!-- Edit content in "about.md" -->
+    <zero-md src="about/about.md"></zero-md>
+  </div>
+
+  <!-- Tempo & Sync -->
+  <button id="part0" class='menu'>Tempo & Sync</button>
+  <div id="start" class='contents' style="display: none;">
     <div id='metronome'></div>
   </div>
 
+  <!-- Sample Launcher -->
   <button id="part1" class='menu'>1. Samples</button>
   <div id="part1contents" class='contents' style="display: none;">
     <p>Part 1 - Sampler</p>
     <div id="sampler"></div>
     <button id="part1instructionsButton" class='menu' style="width: 80%;">Part 1 Instructions</button>
     <div id="part1instructions" class='contents' class='contents' style="display: none; text-align: left;">
-      <!-- Edit content in "about.md" -->
+      <!-- Edit content in "part1.md" -->
       <zero-md src="about/part1.md"></zero-md>
     </div>
   </div>
 
+  <!-- Synth Menu & Keyboard-->
   <button id='part2' class='menu'>2. Synthesis</button>
   <div id='synth-contents' class='contents' style="display: none;">
     <p>Part 2 - Synthesis</p>
@@ -42,6 +52,7 @@
     </div>
   </div>
 
+  <!-- Beats & Sequences -->
   <button id='part3' class='menu'>3. Beats & Sequences</button>
   <div id='part3-contents' class='contents' style="display: none;">
     <p>Part 3 - Beats and Sequences</p>
@@ -57,7 +68,7 @@
     </div>
   </div>
 
-
+  <!-- Generative Music -->
   <button id='part4' class='menu'>4. Music Generator</button>
   <div class='contents' style="display: none;">
     <p>Part 4 - Music Generator</p>
@@ -67,18 +78,14 @@
       <zero-md src="about/part4.md"></zero-md>
     </div>
   </div>
+
+  <!-- View on Mobile (QR Code)-->
   <button id="qrButton" class='menu'>View on mobile device</button>
   <div class='contents' style="display: none; text-align: center;">
     <div id="QRLink" style="margin: auto; width: 80px;"></div>
   </div>
 
-  <button id="aboutButton" class='menu'>About this project ...</button>
-  <div id="about" class='contents' style="display: none; text-align: left;">
-    <!-- Edit content in "about.md" -->
-    <zero-md src="about/about.md"></zero-md>
-  </div>
-
-
+  <!-- Load all the scripts -->
   <script src="scripts/metroGUI.js"></script>
   <script src="scripts/pageLayout.js"></script>
   <script src="scripts/keyboard.js"></script>
