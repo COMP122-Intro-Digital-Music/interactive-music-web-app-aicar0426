@@ -5,7 +5,7 @@
 * added synth menu April 1, 2024
 */
 
-let sequencePromise = loadSequenceData("JSON/sequences.json")
+let sequencePromise = loadSequenceData("JSON/sequences-test.json")
 
 // read in the JSON file with sampler meta-data
 async function loadSequenceData(file) {
@@ -28,11 +28,22 @@ async function loadSequenceData(file) {
 
 function makeSeqPlayer(obj){
   let synthSketches = [];
+  let seqDiv = document.getElementById("sequences");
+  let menuDiv = document.getElementById("seqSynthDiv");
+
   //document.getElementById("sequences").innerHTML = JSON.stringify(obj);
   if(Array.isArray(obj)){
+    if(obj.length == 0){
+      let p = document.createElement("p");
+      p.innerHTML = "No Sequences. 'sequences.json' is empty ('[ ]')";
+      let seqDiv = document.getElementById("sequences");
+      seqDiv.appendChild(p);
+      menuDiv.style = "display: none;" // don't show synth menu if no sequences
+    } else {
+      menuDiv.style = "display: flex;" // if there are sequences to load show the synth menu
+    }
     for(let i = 0; i < obj.length; i++){
       console.log(obj[i].name);
-      let seqDiv = document.getElementById("sequences");
       let d = document.createElement('div');
       d.className = "seqPlayer";
       seqDiv.appendChild(d);
@@ -60,6 +71,8 @@ function makeSeqPlayer(obj){
 
 function createSynthMenu(sketches){
   let menu = document.getElementById("seqSynthMenu");
+  menu.className = "synthMenu";
+  
   if(Array.isArray(synthLibrary)){
     console.log("create synth menu for sequences");
     for(let i = 0; i < synthLibrary.length; i++){

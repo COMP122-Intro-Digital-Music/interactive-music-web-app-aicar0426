@@ -12,6 +12,7 @@ const beatPartGUI = p => {
   var div = document.getElementById("beatParts");
 
   p.setObj = function(_obj) {
+  //  console.log("setting object for beat part " + JSON.stringify(_obj));
     obj = _obj;
     if (obj.hasOwnProperty("pitch"))
       pitch = obj.pitch; //otherwise default "C3"
@@ -29,8 +30,10 @@ const beatPartGUI = p => {
         cells.push(new Cell(p, 40 + i * w, 13, w));
         cells[i].w = w; // adjust as necessary
         cells[i].plays = plays;
+        // console.log(cells[i].x);
       }
     }
+    console.log("beat part " + obj.name + "( " + obj.pattern.length + ")")
     loop = new Tone.Loop((time) => {
       // triggered every sixteenth note.
       //console.log(time);
@@ -45,7 +48,9 @@ const beatPartGUI = p => {
   }
 
   p.setup = function() {
-    p.createCanvas(330, 40);
+    let cnv = p.createCanvas(330, 40);
+    cnv.style("visibility: visible;");
+    // console.log("creating canvas for beat part");
   }
 
   p.setSynth = function(_synth) {
@@ -137,7 +142,7 @@ const beatsGUI = p => {
   p.setup = function() {
     p.createCanvas(350, 60);
     plusButton = new PlusButton(p, p.width * 11 / 12, p.height / 2);
-    playButton = new PlayButton(p, p.width / 2, p.height / 2)
+    playButton = new BeatPlayButton(p, p.width / 2, p.height / 2)
   }
 
   p.draw = function() {
@@ -159,33 +164,37 @@ const beatsGUI = p => {
     times[1] = 0; // set to first beat
     times[0] = Number(times[0]) + 1; // move up to the next measure;
     t = times[0] + ":" + times[1] + ":" + times[2];    
-    return t
+    return t;
   }
 
   p.mousePressed = function() {
     let partsDiv = document.getElementById("beatParts");
-    if (p.dist(p.mouseX, p.mouseY, plusButton.x, plusButton.y) < plusButton.d / 2) {
+    if (plusButton.click(p.mouseX, p.mouseY)) {
       if (partsDiv.style.display === "none") {
         partsDiv.style.display = "block";
-        plusButton.r = p.PI / 4
+        //plusButton.r = p.PI / 4 // handle this in .click()
       } 
       else {
         partsDiv.style.display = "none";
-        plusButton.r = 0;
+        //plusButton.r = 0;
       }
     }
 
-    if (p.dist(p.mouseX, p.mouseY, playButton.x, playButton.y) < playButton.w / 2 && div.style["display"] == "block") {
-      if (playButton.playing) {
+    if (playButton.click(p.mouseX, p.mouseY) && div.style["display"] == "block") {
+      console.log ("playbutton");
+      if(Tone.Transport.state == "stopped"){
+        Tone.Transport.start();
+      }
+      if (!playButton.playing) {
         // stop the beat
-        playButton.playing = false;
+        // playButton.playing = false;
         for(let i = 0; i < loops.length; i++){
           loops[i].loopStop();
         }
       } 
       else {
         //start beat on next measure
-        playButton.playing = true;
+        // playButton.playing = true;
 
         for(let i = 0; i < loops.length; i++){
           loops[i].loopStart(); // P5 sketch for each loop handles timing and loop start/stop
@@ -197,12 +206,72 @@ const beatsGUI = p => {
   }
 }
 
+
+class BeatPlayButton {
+  constructor(_p, _x, _y){
+    this.p = _p; // P5 object reference
+    this.x = _x;
+    this.y = _y;
+    this.w = 50;
+    this.col = this.p.color("#4caf50");
+    this.playing = false;
+  }
+
+  click(_x, _y){
+    let d = this.p.dist(this.x, this.y, _x, _y);
+    if(d < this.w/2){
+      this.playing = !this.playing;
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
+  display(){
+    this.p.push();
+    this.p.translate(this.x, this.y);
+    this.p.scale(.8);
+    this.p.fill("#fde4a9");
+    this.p.stroke("#5d0024");
+    this.p.strokeWeight(4);
+    if(this.playing){
+      this.p.rectMode(this.p.CENTER);
+      this.p.rect(-this.w/4, 0, this.w/4, 40);     
+      this.p.rect(this.w/4, 0, this.w/4, 40);    
+      this.col = this.p.color("#4caff0");
+    } else {
+
+      this.p.ellipse(0, 0, this.w);
+      //this.p.triangle(this.w/2, 0, -this.w/2, -this.w/2, -this.w/2, this.w/2);
+      this.p.stroke(0, 150, 0);
+      this.p.strokeJoin(this.p.ROUND);
+      this.p.fill(this.col);
+      this.p.beginShape();
+      this.p.vertex((this.w/2 * 0.7), 0);
+      let x = this.p.cos(this.p.PI - 1) * (this.w/2 * 0.75);
+      let y = this.p.sin(this.p.PI - 1) * (this.w/2 * 0.75);
+      this.p.vertex(x, y);
+      x = this.p.cos(this.p.PI + 1) * this.w/2 * 0.75;
+      y = this.p.sin(this.p.PI + 1) * this.w/2 * 0.75;
+      this.p.vertex(x, y);
+      this.p.endShape(this.p.CLOSE);
+      this.p.textAlign(this.p.CENTER, this.p.CENTER);
+      this.p.noStroke();
+      this.p.fill(0, 150, 0);
+      this.p.text("P", -2, 1);
+      this.col = this.p.color("#4caf50");
+    }
+    this.p.pop();
+  }
+}
+
 class PlusButton {
   constructor(_p, _x, _y) {
     this.p = _p; // p5 instance
     this.x = _x;
     this.y = _y;
-    this.r = 0; // rotation
+    this.r = this.p.PI/4; // rotation
     this.d = 30; // diameter
   }
 
@@ -217,11 +286,19 @@ class PlusButton {
     this.p.line(0, -this.d / 2, 0, this.d / 2);
     this.p.pop();
   }
-  click() {
-    if (this.r > 0) {
-      this.r = 0;
+  click(_x, _y) {
+    let d = this.p.dist(this.x, this.y, _x, _y);
+    // console.log("(" + this.x + ", " + this.y + ") (" + _x + ", " + _y + ")");
+    if(d < this.d/2){
+      // rotate the button
+      if (this.r > 0) {
+        this.r = 0;
+      } else {
+        this.r = this.p.PI / 4;
+      }
+      return true; // if clicked
     } else {
-      this.r = p.PI / 4;
+      return false
     }
   }
 }

@@ -1,0 +1,15 @@
+[
+    {
+        "name" : "kick",
+        "pitch" : "A3",
+        "pattern" : "1...",
+        "synth" : "mySampler"
+    },
+    {        
+        "name" : "clap",
+        "pitch" : "C4",
+        "pattern" : "....1...",
+        "synth" : "mySampler"
+    }
+    
+]

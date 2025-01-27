@@ -27,6 +27,14 @@ async function loadSamplerData(file) {
       try {
         let obj = JSON.parse(text); // if JSON is valid, make an object
         // loadSamples(obj); // load samples into the player
+        if(Array.isArray(obj) && obj.length == 0){
+          // empty array
+          console.log("samples.json is an empty array");
+          let noSample = document.createElement('p');
+          noSample.innerHTML = "No samples loaded. <br> Check your file 'JSON/samples.json' <br> and see the instructions below"
+          let samplerDiv = document.getElementById("sampler");
+          samplerDiv.appendChild(noSample);
+        }
         for(let i = 0; Array.isArray(obj) && i < obj.length; i++){
           console.log("process sample object " + i);
           if(obj[i].hasOwnProperty("file")){

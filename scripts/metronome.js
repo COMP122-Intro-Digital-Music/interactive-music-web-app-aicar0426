@@ -31,11 +31,11 @@ const clickSampler = new Tone.Sampler(
 // var metro = "off"; // metronome state
 
 let m = document.getElementById("metronome");
-let mGUI = document.createElement("div");
-mGUI.style = "position: relative"
+let metGUI = document.createElement("div");
+metGUI.style = "position: relative"
 //'metronome' div is in the Start menu
-let p5metro = new p5(metroGUI, mGUI); 
-m.appendChild(mGUI);
+let p5metro = new p5(metroGUI, metGUI); 
+m.appendChild(metGUI);
 // transport button
 
 function getNextbeat(){

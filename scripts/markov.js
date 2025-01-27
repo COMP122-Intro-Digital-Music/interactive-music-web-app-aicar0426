@@ -2,7 +2,7 @@
 * Make a markov chain player interface with Tone.js and P5.js
 * July 5, 2023
 */
-let markovPromise = loadMarkovData("JSON/markov.json")
+let markovPromise = loadMarkovData("JSON/markov-test.json")
 
 // read in the JSON file with sampler meta-data
 async function loadMarkovData(file) {
@@ -15,7 +15,9 @@ async function loadMarkovData(file) {
   }
   catch (error) {
     let e = "error - invalid JSON file (markov.json)<br /> copy and paste your JSON to <a href = 'https://jsonlint.com/' target='_blank'>jsonlint.com</a>";
-    document.getElementById("markov").innerHTML = e;
+    let mdiv = document.getElementById("markov");
+    mdiv.innerHTML = e;
+    //let testP5 = new p5(testGUI, mdiv);
     console.log(e);
     return;
   }
@@ -27,16 +29,24 @@ async function loadMarkovData(file) {
 function makeGraph(obj) {
   console.log("make graph!");
   if (Array.isArray(obj)) {
+    if(obj.length == 0){
+      let p = document.createElement("p");
+      p.innerHTML = "No Markov Players. 'markov.json' is empty ('[ ]')";
+      let markovDiv = document.getElementById("markov");
+      markovDiv.appendChild(p);
+    }
+
     for (let i = 0; i < obj.length; i++) {
-      console.log(obj[i].name);
+      console.log("markov object " + obj[i].name);
       let mDiv = document.getElementById("markov");
       let d = document.createElement('div');
       d.className = "seqPlayer";
-      mDiv.appendChild(d);
+      mDiv.appendChild(d); 
       let sketch = new p5(mGUI, d); // invoke p5
-      //console.log ("sketch width: " + sketch.width);
+      // console.log ("sketch width: " + sketch.width);
+
       sketch.setObj(obj[i]); // pass an object to a sketch
-      //console.log("markov GUI width: " + sketch.width)
+      // console.log("markov GUI width: " + sketch.width)
       let pitchSet = {};
       let rhythmSet = {};
       let staccato = false;

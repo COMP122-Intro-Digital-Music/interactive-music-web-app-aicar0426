@@ -11,6 +11,7 @@ const seqGUI = p => {
   var looping = false; // loop the sequence
   var augmented = false; // double the duration and note lengths
   var shifted = false; // shift onset later by 1 eighth note
+  var onNext = "m"; // play on next measure by default
   var playing = false;
   var timerGUI;
   var velocity = 1;
@@ -161,19 +162,27 @@ const seqGUI = p => {
       }
     })
     //SButton, OctupButton, OctdnButton
-    SButton = p.createButton("+8n");
+
+    // +8n shift button re-purposed to "onNext" ('m' or 'b')
+    // controls whether sequence plays on next measure or next beat
+    SButton = p.createButton("M"); // default
     SButton.position(340, 5);
     SButton.style(style);
     SButton.mousePressed(()=>{
+      shifted = false; // don't need this any more
       if(enabled){
-        if(shifted){
-          shifted = false;
-          SButton.style("background-color: #cfcfcf;");
-          console.log("shifted: " + shifted);
-        } else {
-          shifted = true;
+        if(onNext == "m"){ // switch to "b"
+          // shifted = false;
           SButton.style("background-color: #febc17;");
-          console.log("shifted: " + shifted);
+          SButton.html("B")
+          onNext = "b"
+          // console.log("onNext: " + onNext);
+        } else {
+          // shifted = true;
+          SButton.style("background-color: #cfcfcf;");
+          // console.log("shifted: " + shifted);
+          SButton.html("M");
+          onNext = "m";
         }
       }
 
@@ -277,7 +286,15 @@ const seqGUI = p => {
 //      let pB = document.getElementById("powerButton");
 //      pB.click();
     }
-    let t = p.nextBeat(shifted);
+
+    let t;
+    if(onNext == "m"){
+      t = p.nextMeasure();
+    } else {
+      t = p.nextBeat(shifted);
+    }
+
+
     part = new Tone.Part(((time, note) => {
         // the notes given as the second element in the array
         // will be passed in as the second argument 
@@ -603,6 +620,18 @@ class PianoRoll {
       this.p.line(i * barline, 0, i * barline, this.h);
     }
     //draw notes
+    let low = 56; // default low note for vertical scaling purposes
+    let high = 80; // default high note
+    if(Array.isArray(seq)){
+      for(let i = 0; i < seq.length; i++){
+        let pit = Tone.Frequency(seq[i].pitch).toMidi();
+        if(pit < low){
+          low = pit; // set new low
+        } else if (pit > high){
+          high = pit; // set new high pitch
+        }
+      }
+    }
     let r = 160;
     let g = 20;
     let b = 79;
@@ -617,7 +646,8 @@ class PianoRoll {
         let t = Tone.Time(seq[i].time).toSeconds();
 //        let x = this.p.map(t, 0, d, 2, this.w -10);//horizontal scaling
         let x = this.p.map(t, 0, d, 2, window);//horizontal scaling
-        let y = this.p.map(pit, 80, 56, 5, this.h - 8);
+/** find lowest note and highest note in sequence first and use those values here */
+        let y = this.p.map(pit, high, low, 5, this.h - 8);
 //        let l = (Tone.Time(seq[i].dur).toSeconds()/d * this.w) * .9;
         let l = (Tone.Time(seq[i].dur).toSeconds()/d * window) * .9; // note length
 //        this.p.rect(10 + i * 15, y, 10, 2);

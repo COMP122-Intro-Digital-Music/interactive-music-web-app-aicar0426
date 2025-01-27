@@ -52,7 +52,8 @@ const mGUI = p => {
     }
   }
   p.setup = function() {
-    p.createCanvas(w, h);
+    console.log("hello Markov");
+    p.createCanvas(w, h); // see above
     instrument = synthLibrary[0].synth; // set to default
     tButton = new Button(p, p.width / 2, p.height / 2, p.color(0, 200, 0), "start \n" + name);
     slider = new Slider(p, p.width * 3 / 4, p.height * 11/12);
@@ -60,6 +61,7 @@ const mGUI = p => {
     selectSynth = p.createSelect();
     selectSynth.class("synthSequenceMenu");
     selectSynth.position(10, 10);
+    selectSynth.style("width: 110px")
 
     for(let i = 0; i < synthLibrary.length; i ++){
       selectSynth.option(synthLibrary[i].name, i);
@@ -68,6 +70,7 @@ const mGUI = p => {
 
     selectLength = p.createSelect();
     selectLength.class("synthSequenceMenu");
+    selectLength.style("width: 100px");
     selectLength.position(p.width * .7, 10);
     selectLength.option("legato");
     selectLength.option("marcato");
@@ -266,3 +269,15 @@ class Slider {
     this.val = this.p.map(this.pos, -50, 50, 0, 1);
   }
 }
+
+const testGUI = p =>{
+  p.setup = function(){
+    console.log("hello World!")
+    p.createCanvas(200, 200);
+    p.background(200);
+    p.textAlign(p.CENTER);
+    p.text("Hello World!", 100, 100);
+  }
+}
+
+const testConstant = "Hello World"; // can we connect to this file?

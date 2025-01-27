@@ -9,15 +9,15 @@ const keyGUI = p => {
   var instrument;
   var keyboard = []; // an array of keys
   var whiteKeys = [0, 2, 4, 5, 7, 9, 11];
-  var size = 16; // how many keys?
+  var size = 20; // how many keys?
   var start = 57; // lowest key (MIDI note #57 is A3)
   //QWERTY keymap
-  var keyMap = ['a', 'w', 's', 'd', 'r', 'f', 't', 'g', 'h', 'u', 'j', 'i', 'k', 'o', 'l', ';'];
+  var keyMap = ['a', 'w', 's', 'd', 'r', 'f', 't', 'g', 'h', 'u', 'j', 'i', 'k', 'o', 'l', ';', '[', 'n', 'm', ',', '.'];
   var div = document.getElementById("synth-contents");
 
   p.setup = function() {
     // P5 setup funciton (runs once on load)
-    p.createCanvas(350, 250);
+    p.createCanvas(400, 220);
 //    console.log("synth interface parent node: ");
 //    div = cnv.parent();
     console.log("synth display: " + div.style["display"]);
@@ -28,15 +28,15 @@ const keyGUI = p => {
       // generate array of key objects
       let key = start + i; // starting note
       if (whiteKeys.indexOf(key % 12) < 0) { // black
-        keyboard.push(new Key(p, 10 + keypos * 30, 100, keyMap[i], key, false));
+        keyboard.push(new Key(p, 10 + keypos * 30, 55, keyMap[i], key, false));
       } else { // white
-        keyboard.push(new Key(p, 25 + keypos * 30, 100, keyMap[i], key, true));
+        keyboard.push(new Key(p, 25 + keypos * 30, 55, keyMap[i], key, true));
         keypos++;
       }
     }
     selectSynth = p.createSelect();
     selectSynth.class("synthMenu"); // create menu
-    selectSynth.position(10, 30); // place menu
+    selectSynth.position(10, 15); // place menu
     for(let i = 0; i < synthLibrary.length; i ++){
       // add synth pre-set titles to menu
       selectSynth.option(synthLibrary[i].name, i);
