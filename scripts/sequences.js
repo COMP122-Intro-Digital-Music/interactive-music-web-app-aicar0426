@@ -46,6 +46,7 @@ function makeSeqPlayer(obj){
       console.log(obj[i].name);
       let d = document.createElement('div');
       d.className = "seqPlayer";
+      d.style = "margin: auto;"
       seqDiv.appendChild(d);
 //      let p = document.createElement('div'); // player container
 //      d.appendChild(p); // add player to parent div

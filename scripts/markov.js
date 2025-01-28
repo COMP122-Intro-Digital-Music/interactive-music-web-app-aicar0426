@@ -40,6 +40,7 @@ function makeGraph(obj) {
       console.log("markov object " + obj[i].name);
       let mDiv = document.getElementById("markov");
       let d = document.createElement('div');
+      d.style = "margin: auto;"
       d.className = "seqPlayer";
       mDiv.appendChild(d); 
       let sketch = new p5(mGUI, d); // invoke p5

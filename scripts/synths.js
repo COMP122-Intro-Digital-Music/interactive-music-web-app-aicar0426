@@ -76,8 +76,10 @@ function makeSynthPlayer(obj) {
 
   // set up the Keyboard GUI
   let s = document.getElementById("synths");
+  s.style = "margin:auto;"
   let k = document.createElement('div');
   k.className = "seqPlayer";
+  k.style = "margin: auto;"
   s.appendChild(k);
   let sketch = new p5(keyGUI, k); // invoke p5 and add it to the div
 }

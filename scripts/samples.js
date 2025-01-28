@@ -5,7 +5,7 @@
 var samplePlayers = []; // store sample players globally
 var sampleParts = [];
 
-let promise = loadSamplerData("JSON/samples.json");
+let promise = loadSamplerData("JSON/samples-test.json");
 // read in the JSON file with sampler meta-data
 async function loadSamplerData(file) {
   /** read a JSON file (from a url) that contains an array of objects; 
