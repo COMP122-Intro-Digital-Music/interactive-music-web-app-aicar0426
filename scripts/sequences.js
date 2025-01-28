@@ -5,7 +5,7 @@
 * added synth menu April 1, 2024
 */
 
-let sequencePromise = loadSequenceData("JSON/sequences-test.json")
+let sequencePromise = loadSequenceData("JSON/sequences.json")
 
 // read in the JSON file with sampler meta-data
 async function loadSequenceData(file) {

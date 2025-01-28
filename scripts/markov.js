@@ -2,7 +2,7 @@
 * Make a markov chain player interface with Tone.js and P5.js
 * July 5, 2023
 */
-let markovPromise = loadMarkovData("JSON/markov-test.json")
+let markovPromise = loadMarkovData("JSON/markov.json")
 
 // read in the JSON file with sampler meta-data
 async function loadMarkovData(file) {

@@ -1,5 +1,5 @@
 var beatLoops = [];
-let beatPromise = loadBeatData("JSON/beats-test.json");
+let beatPromise = loadBeatData("JSON/beats.json");
 
 
 // read in the JSON file with sampler meta-data
