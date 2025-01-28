@@ -32,7 +32,7 @@ const clickSampler = new Tone.Sampler(
 
 let m = document.getElementById("metronome");
 let metGUI = document.createElement("div");
-metGUI.style = "position: relative; width: 400px; margin: auto;"
+metGUI.style = "position: relative; width: 380px; margin: auto;"
 //'metronome' div is in the Start menu
 let p5metro = new p5(metroGUI, metGUI); 
 m.appendChild(metGUI);

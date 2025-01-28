@@ -65,14 +65,14 @@ const metroGUI = p => {
     drumPart.loop = true;
 
     p.setup = function(){
-        p.createCanvas(400, 200);
+        p.createCanvas(380, 200);
 
         transportStart = p.createButton("Start Transport");
         transportStart.style("font-size : 14px; width: 120px; height:90px");
-        transportStart.style("height: 25px;");
+        transportStart.style("height: 40px;");
         transportStart.style("border: 3px solid rgb(128, 0, 0); border-radius: 8px");
         transportStart.style("color : rgb(128, 0, 0); background-color: #ffd700");
-        transportStart.position(20, 32);
+        transportStart.position(20, 30);
         transportStart.mousePressed(()=>{
             if(Tone.getTransport().state == "stopped" || Tone.getTransport().state == "paused"){
                 Tone.getTransport().start();
@@ -89,7 +89,7 @@ const metroGUI = p => {
         metroStart = p.createButton("start beat");
         metroStart.style("font-size : 16px");
         metroStart.position(20, 100);  
-        metroStart.style("height: 25px;");
+        metroStart.style("height: 40px;");
         metroStart.style("border: 3px solid rgb(128, 0, 0); border-radius: 8px");
         metroStart.style("color : rgb(128, 0, 0); background-color: #ffd700");
         metroStart.mousePressed(()=>{
@@ -143,7 +143,7 @@ const metroGUI = p => {
         // tempo change slider (change tempo on release)
         tempoSlider = p.createSlider(40, 200, 120, 1);
         tempoSlider.position(200, 70);
-        tempoSlider.size(180);
+        tempoSlider.size(160);
         tempoSlider.changed(()=>{
             tempoBox.value(tempoSlider.value());
             // tempoBox.changed();
@@ -163,7 +163,7 @@ const metroGUI = p => {
 
         syncSlider = p.createSlider(-.1, .1, 0, .01);
         syncSlider.position(200, 135);
-        syncSlider.size(180);
+        syncSlider.size(160);
         syncSlider.changed(()=>{
             syncSlider.value(0);
         });
@@ -172,7 +172,7 @@ const metroGUI = p => {
         beats = [];
         for(let i = 0; i < patterns.length; i++){
             console.log("new beat button " + i);
-            beats.push(new Beat(20 * i, 155, i+1, p));
+            beats.push(new Beat(20 * i, 170, i+1, p));
         }
 
         beats[0].on = true; // turn on first beat pattern;
@@ -186,7 +186,7 @@ const metroGUI = p => {
         p.text("Metronome & Sync", 10, 17);
         p.noFill();
         p.stroke('maroon');
-        p.rect(190, 27, 205, 60);
+        p.rect(190, 27, 185, 60);
         p.noStroke();
         p.fill(0);
         p.textAlign(p.CENTER);
@@ -194,11 +194,11 @@ const metroGUI = p => {
         p.text("Tempo", 220, 50);
         p.textAlign(p.LEFT);
         p.textSize(12);
-        p.text("BPM", 310, 50);
+        p.text("BPM", 320, 50);
         // beat sync block
         p.noFill();
         p.stroke("maroon");
-        p.rect(190, 100, 205, 75);
+        p.rect(190, 100, 185, 75);
         p.noStroke();
         p.fill(0);
         p.textAlign(p.LEFT);
@@ -206,11 +206,11 @@ const metroGUI = p => {
         p.text("Beat Sync:", 200, 120);
         p.textAlign(p.CENTER);
         p.textSize(12);
-        p.text(Math.round(Tone.getTransport().bpm.value) + " bpm", 300, 170);
+        p.text(Math.round(Tone.getTransport().bpm.value) + " bpm", 284, 170);
         p.textAlign(p.LEFT);
         p.text("<- slower", 200, 170);
         p.textAlign(p.RIGHT);
-        p.text("faster->", 382, 170);
+        p.text("faster->", 368, 170);
 //        p.text(Tone.getTransport().bpm.value, 450, 55)
         p.textSize(12);
        // p.text(Math.round(Tone.getTransport().bpm.value) + " bpm", 200, 180); 
@@ -218,7 +218,7 @@ const metroGUI = p => {
         let t = Tone.getTransport().position;
         let times = t.split(':');
         p.push()
-        p.translate(20, 62); // Transport counter block
+        p.translate(20, 75); // Transport counter block
         p.textAlign(p.LEFT);
         // p.text("Transport", 0, -4);
         p.fill('white');
