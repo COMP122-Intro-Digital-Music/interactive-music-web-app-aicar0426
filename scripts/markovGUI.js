@@ -3,8 +3,9 @@
 * Creates a user interface with a graphical representation of the Markov graph and connections between nodes
 */
 const mGUI = p => {
-  var tButton, s1Button, s2Button, nodes, beatButton;
-  var nButtons = new Array();
+  var tButton, s1Button, s2Button, nodes, beatButton, matrixSelector;
+  var nButtons; // array of pitch nodes
+  var rButtons; // array of rhythm nodes
   var pitchSet = null, rhythmSet = null; // needs setter
   var loop = null;
   var name = "markov chain";
@@ -42,10 +43,11 @@ const mGUI = p => {
   p.setObj = function(obj){
     if(obj.hasOwnProperty("pitchSet")){
       pitchSet = obj.pitchSet;
-      p.makeNodes(pitchSet, w, h);
+      nButtons = p.makeNodes2(pitchSet, w, h);
     }
     if(obj.hasOwnProperty("rhythmSet")){
       rhythmSet = obj.rhythmSet;
+      rButtons = p.makeNodes2(rhythmSet, w, h);
     }
     if(obj.hasOwnProperty("name")){
       name = obj.name;
@@ -58,10 +60,11 @@ const mGUI = p => {
     tButton = new Button(p, p.width / 2, p.height / 2, p.color(0, 200, 0), "start \n" + name);
     slider = new Slider(p, p.width * 3 / 4, p.height * 11/12);
 
+    matrixSelector = new MatrixSelect(p, 10, p.height -50);
     selectSynth = p.createSelect();
     selectSynth.class("synthSequenceMenu");
     selectSynth.position(10, 10);
-    selectSynth.style("width: 110px")
+    selectSynth.style("width: 110px");
 
     for(let i = 0; i < synthLibrary.length; i ++){
       selectSynth.option(synthLibrary[i].name, i);
@@ -88,6 +91,27 @@ const mGUI = p => {
 //    console.log(noteLength);
   }
 
+  p.makeNodes2 = function(_set, _w, _h){
+    let buttons = [];
+    let nodes = Object.keys(_set.matrix);
+    let slice = p.TWO_PI;
+    if (nodes.length > 0) {
+      slice = p.TWO_PI / nodes.length; // divide the circle by number of nodes
+    }
+
+    for (let i = 0; i < nodes.length; i++) {
+      let x = (p.cos(slice * i) * 150) + (w / 2); // find a location
+      let y = (p.sin(slice * i) * 150) + (h / 2);
+
+      buttons.push(new Button(p, x, y, p.color(p.random(250), p.random(250), p.random(250)), nodes[i]));
+      buttons[i].w = 40; // node button size
+      buttons[i].node = nodes[i]; // assign node name
+    }
+    return buttons;
+    // returns an array of button objects, each representing a node
+
+  }
+  /*
   p.makeNodes = function(pitchSet, w, h){
     // w and h are width and heigh of the sketch passed from markov.js after instantiating the GUI sketch
     nodes = Object.keys(pitchSet.matrix); // array of nodes
@@ -103,52 +127,58 @@ const mGUI = p => {
       nButtons[i] = new Button(p, x, y, p.color(p.random(250), p.random(250), p.random(250)), nodes[i]);
       nButtons[i].w = 40; // node button size
       nButtons[i].pitch = nodes[i]; // assign a pitch property
-
     }
-    
   }
-
+*/
   p.draw = function() {
     p.background(200);
     tButton.message = name;
     tButton.display(); // transport button
 
-    p.drawConnections(); // arrows
 
-    for (let i = 0; i < nButtons.length; i++) {
-      nButtons[i].display(); // node buttons
+    if(matrixSelector.showing == "pitches"){
+      p.drawConnections(pitchSet.matrix, nButtons); // arrows
+      for (let i = 0; i < nButtons.length; i++) {
+        nButtons[i].display(); // node buttons
+      }
+    } else {
+      p.drawConnections(rhythmSet.matrix, rButtons); // arrows
+      for (let i = 0; i < rButtons.length; i++) {
+        rButtons[i].display(); // node buttons
+      }
+
     }
+    //adust volume
     slider.display();
-    //let x = (p.cos(0) * 150) + (p.width / 2); // find a location
-    //let y = (p.sin(0) * 150) + (p.height / 2);   
-    //p.ellipse(x, y, 10)
     if(p.mouseIsPressed){
       if(p.mouseX < slider.x + 50 && p.mouseX > slider.x - 50 && p.mouseY > slider.y - 20 && p.mouseY < slider.y + 20){
         slider.move(p.mouseX - slider.x);
         vol = slider.val;
       }
     }
+    // show pitch or rhythm matrix
+    matrixSelector.display(); 
   }
   
 // draw a transparent line between nodes with a connection
-  p.drawConnections = function() {
+  p.drawConnections = function(_matrix, _buttons) {
     p.stroke(255, 0, 0, 30);
     p.strokeWeight(5);
     let obj = pitchSet.matrix;
-    let keys = Object.keys(obj)
+    let keys = Object.keys(_matrix)
     //console.log(keys);
     for (let i = 0; i < keys.length; i++) {
-      let list = obj[keys[i]];
+      let list = _matrix[keys[i]];
       //console.log(list);
       //draw a line for each element in the list
-      let x = nButtons[i].x;
-      let y = nButtons[i].y;
+      let x = _buttons[i].x;
+      let y = _buttons[i].y;
       //console.log("button " + i + ": " + x + ", " + y);
       for (let j = 0; j < list.length; j++) {
         //find the index in keys of an item in list
         let connect = keys.indexOf(list[j]);
-        let x2 = nButtons[connect].x;
-        let y2 = nButtons[connect].y;
+        let x2 = _buttons[connect].x;
+        let y2 = _buttons[connect].y;
         p.line(x, y, x2, y2);
         //use drawArrow() from p5.org lerp() reference
         let v1 = p.createVector(x, y);
@@ -175,23 +205,34 @@ const mGUI = p => {
     p.pop();
   }
 
-  p.onButton = function(note) {
+  p.onButton = function(node) {
     for (let i = 0; i < nButtons.length; i++) {
-      if (note == nButtons[i].pitch) {
+      if (node == nButtons[i].node) {
         nButtons[i].playing = true;
+      }
+    }
+    for (let i = 0; i < rButtons.length; i++) {
+      if (node == rButtons[i].node) {
+        rButtons[i].playing = true;
       }
     }
   }
 
-  p.offButton = function(note) {
+  p.offButton = function(node) {
     for (let i = 0; i < nButtons.length; i++) {
-      if (note == nButtons[i].pitch) nButtons[i].playing = false;
+      if (node == nButtons[i].node) nButtons[i].playing = false;
+    }
+    for (let i = 0; i < rButtons.length; i++) {
+      if (node == rButtons[i].node) rButtons[i].playing = false;
     }
   }
 
   p.mousePressed = function() {
     if (p.dist(p.mouseX, p.mouseY, tButton.x, tButton.y) < tButton.w / 2 && div.style["display"] == "block") 
     {
+      if(Tone.getTransport().state == "stopped"){
+        Tone.getTransport().start();
+      }
       if (loop && loop.state == "stopped") {
         let t = Tone.Transport.position;
         let times = t.split(':');
@@ -210,8 +251,58 @@ const mGUI = p => {
         tButton.col = p.color(0, 200, 0);
       }
     }
+    if(matrixSelector.click(p.mouseX, p.mouseY) && div.style["display"] == "block"){
+      console.log(matrixSelector.showing);
+    }
   }
 };
+
+class MatrixSelect {
+  constructor(_p5, _x, _y){
+    this.p5 = _p5;
+    this.x = _x;
+    this.y = _y;
+    this.w = 80;
+    this.showing = "pitches";
+  }
+  click(_mX, _mY){
+    if(_mX > this.x && _mX < this.x + this.w && _mY > this.y && _mY < this.y + (this.w/3)){
+      if(this.showing == "pitches"){
+        this.showing = "rhythm"
+      } else{
+        this.showing = "pitches"
+      }
+      return true
+    }
+    else {
+      this.selected = false;
+      return false
+    }
+  }
+
+  display(){
+    this.p5.push();
+    this.p5.translate(this.x, this.y);
+    if(this.showing == "pitches"){
+      this.p5.fill("gold");
+      this.p5.rect(0, 0, this.w, this.w/3);
+      this.p5.fill("maroon");
+      this.p5.noStroke();
+      this.p5.textAlign(this.p5.LEFT, this.p5.TOP)
+      this.p5.text("show rhythm", 5, 8);
+    }
+    else {
+      this.p5.fill("maroon");
+      this.p5.rect(0, 0, this.w, this.w/3);
+      this.p5.fill("gold");
+      this.p5.noStroke();
+      this.p5.textAlign(this.p5.LEFT, this.p5.TOP)
+      this.p5.text("show pitches", 5, 8);
+    }
+
+    this.p5.pop();
+  }
+}
 
 class Button {
   constructor(_p, X, Y, col, msg) {
@@ -222,7 +313,7 @@ class Button {
     this.col = col;
     this.message = msg;
     this.playing = false;
-    this.pitch = "C0";
+    this.node = "C0";
   }
 
   display() {

@@ -87,8 +87,9 @@ function makeGraph(obj) {
         //Tone.Transport.schedule
         loop.interval = r; // set the interval to a new value
         sketch.onButton(p);
+        sketch.onButton(r);
         let offTime = "+" + (0.9 * Tone.Time(r).toSeconds());
-        Tone.Transport.schedule((time) => { sketch.offButton(p) }, offTime);
+        Tone.Transport.schedule((time) => { sketch.offButton(p); sketch.offButton(r); }, offTime);
 
       }, rhythmSet.state);
       loop.state = "stopped";
