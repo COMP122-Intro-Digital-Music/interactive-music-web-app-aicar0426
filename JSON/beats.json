@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "name": "beat 1",
+    "pitch": "A#3",
+    "pattern": "00001000000001000"
+  },
+  {
+    "name": "beat 2",
+    "pitch": "C4",
+    "pattern": "1000"
+  }
+]
